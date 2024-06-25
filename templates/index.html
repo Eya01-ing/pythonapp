@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Image</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script>
+        function previewImage() {
+            const file = document.querySelector('input[type=file]').files[0];
+            const reader = new FileReader();
+            reader.addEventListener("load", function () {
+                document.getElementById('preview').src = reader.result;
+            }, false);
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Upload an image to extract text</h1>
+        <form action="/form" method="post" enctype="multipart/form-data" class="mt-4">
+            <div class="form-group">
+                <input type="file" name="file" class="form-control" onchange="previewImage()">
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+        <div class="mt-4">
+            <h3>Image Preview</h3>
+            <img id="preview" src="" alt="Image Preview" style="max-width: 100%; height: auto;">
+        </div>
+    </div>
+</body>
+</html>

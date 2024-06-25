@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Extracted Text</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Extracted Text</h1>
+        <div class="mt-4">
+            <h3>Uploaded Image</h3>
+            <img src="data:image/jpeg;base64,{{ image_data }}" alt="Uploaded Image" style="max-width: 100%; height: auto;">
+        </div>
+        <div class="mt-4">
+            <h3>Extracted Information</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Material</th>
+                        <th>Plant</th>
+                        <th>Storage Location</th>
+                        <th>Movement Type</th>
+                        <th>Special Stock</th>
+                        <th>Material Document</th>
+                        <th>Posting Date</th>
+                        <th>Quantity in Unit of Entry</th>
+                        <th>Unit of Entry</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ data.material }}</td>
+                        <td>{{ data.plant }}</td>
+                        <td>{{ data.storage_location }}</td>
+                        <td>{{ data.movement_type }}</td>
+                        <td>{{ data.special_stock }}</td>
+                        <td>{{ data.material_document }}</td>
+                        <td>{{ data.posting_date }}</td>
+                        <td>{{ data.quantity_in_unit_of_entry }}</td>
+                        <td>{{ data.unit_of_entry }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4">
+            <a href="/" class="btn btn-primary">Upload Another Image</a>
+        </div>
+    </div>
+</body>
+</html>

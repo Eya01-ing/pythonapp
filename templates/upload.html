@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Image</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        #image-preview {
+            margin-top: 20px;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload an Image to Extract Text</h1>
+        <form id="upload-form">
+            <input type="file" name="file" id="file-input">
+            <input type="submit" value="Upload">
+        </form>
+        <img id="image-preview" src="" alt="Image Preview">
+        <div id="result">
+            <table id="result-table">
+                <thead>
+                    <tr>
+                        <th>Material</th>
+                        <th>Plant</th>
+                        <th>Storage Location</th>
+                        <th>Movement Type</th>
+                        <th>Special Stock</th>
+                        <th>Material Document</th>
+                        <th>Posting Date</th>
+                        <th>Quantity in Unit of Entry</th>
+                        <th>Unit of Entry</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file.');
+                return;
+            }
+
+            // Display image preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('image-preview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch('/extract-text', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            if (result.error) {
+                alert(result.error);
+            } else {
+                const text = result.text;
+
+                // Clear existing table body content
+                const tbody = document.querySelector('#result-table tbody');
+                tbody.innerHTML = '';
+
+                // Parse the extracted text and map each field to the corresponding table column
+                const rows = text.split('\n\n');
+                let rowData = {};
+                rows.forEach(row => {
+                    const [key, value] = row.split(': ').map(item => item.trim());
+                    if (key && value) {
+                        rowData[key] = value;
+                    }
+                });
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${rowData['Material'] || ''}</td>
+                    <td>${rowData['Plant'] || ''}</td>
+                    <td>${rowData['Storage Location'] || ''}</td>
+                    <td>${rowData['Movement Type'] || ''}</td>
+                    <td>${rowData['Special Stock'] || ''}</td>
+                    <td>${rowData['Material Document'] || ''}</td>
+                    <td>${rowData['Posting Date'] || ''}</td>
+                    <td>${rowData['Quantity in Unit of Entry'] || ''}</td>
+                    <td>${rowData['Unit of Entry'] || ''}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+        });
+    </script>
+</body>
+</html>
