@@ -6,6 +6,82 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#send-to-sap').on('click', function() {
+                var data1 = JSON.stringify({
+            "SNDPOR": "SAPAQE",
+            "MESTYP": "MATMAS",
+            "BEGIN": "1",
+            "RCVPOR": "CPI",
+            "MANDT": "400",
+            "SEGMENT_1": "1",
+            "EDI_DC40": "string",
+            "SEGMENT_3": "1",
+            "SEGMENT_2": "1",
+            "MTART": "FERT",
+            "E1MARAM": "string",
+            "DIRECT": "1",
+            "MATNR": "000000000000001132",
+            "ERNAM": "string",
+            "RCVPRN": "S4HANATOCP",
+            "E1MAKTM": "string",
+            "SNDPRT": "LS CPI",
+            "RCVPRT": "LS CPI",
+            "MEINS": "string",
+            "SNDPRN": "AQE_SENDER",
+            "MBRSH": "M",
+            "TABNAM": "EDI_DC40",
+            "IDOCTYP": "MATMAS05",
+            "CONTAINER": "string"})
+                var data = JSON.stringify({
+                    "SNDPOR": "{{ data.sndpor }}",
+                    "MESTYP": "{{ data.mestyp }}",
+                    "BEGIN": "{{ data.begin }}",
+                    "RCVPOR": "{{ data.rcvpor }}",
+                    "MANDT": "{{ data.mandt }}",
+                    "SEGMENT_1": "1",
+                    "EDI_DC40": "{{ data.edi_dc40 }}",
+                    "SEGMENT_3": "{{ data.segment_3 }}",
+                    "SEGMENT_2": "1",
+                    "MTART": "{{ data.mtart }}",
+                    "E1MARAM": "string",
+                    "DIRECT": "{{ data.direct }}",
+                    "MATNR": "0000000000001132",
+                    "ERNAM": "{{ data.ernam }}",
+                    "RCVPRN": "{{ data.rcvprn }}",
+                    "E1MAKTM": "string",
+                    "SNDPRT": "{{ data.sndprt }}",
+                    "RCVPRT": "{{ data.rcvprt }}",
+                    "MEINS": "{{ data.meins }}",
+                    "SNDPRN": "{{ data.sndprn }}",
+                    "MBRSH": "{{ data.mbrsh }}",
+                    "TABNAM": "{{ data.tabnam }}",
+                    "IDOCTYP": "MATMAS05",
+                    "CONTAINER": "{{ data.container }}"
+                });
+                console.log(data)
+                $.ajax({
+                    type: 'POST',
+                    url: "https://14385865trial-trial.integrationsuitetrial-apim.us10.hana.ondemand.com:443/14385865trial/AI",
+                    data: data1,
+                    contentType: 'application/json',
+                    headers: {
+                        'Authorization': 'Basic sb-f1802272-ccd0-41e5-9df4-e79403f0c99a!b297017|it!b26655:351e9efe-8bf5-4bee-8172-51b67b2f99f6$_xv2TgE8YPiJePwC2nvErf9YLRziE4P7CBMYi8ooIFE='
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        alert('Data sent to SAP successfully!');
+                    },
+                    error: function(error) {
+                        console.log(error);
+                        alert('Failed to send data to SAP.');
+                    }
+                });
+            });
+        });
+    </script>
     <div class="container mt-5">
         <h1>Extracted Text</h1>
         <div class="mt-4">
@@ -14,37 +90,107 @@
         </div>
         <div class="mt-4">
             <h3>Extracted Information</h3>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Material</th>
-                        <th>Plant</th>
-                        <th>Storage Location</th>
-                        <th>Movement Type</th>
-                        <th>Special Stock</th>
-                        <th>Material Document</th>
-                        <th>Posting Date</th>
-                        <th>Quantity in Unit of Entry</th>
-                        <th>Unit of Entry</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{{ data.material }}</td>
-                        <td>{{ data.plant }}</td>
-                        <td>{{ data.storage_location }}</td>
-                        <td>{{ data.movement_type }}</td>
-                        <td>{{ data.special_stock }}</td>
-                        <td>{{ data.material_document }}</td>
-                        <td>{{ data.posting_date }}</td>
-                        <td>{{ data.quantity_in_unit_of_entry }}</td>
-                        <td>{{ data.unit_of_entry }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            
+            <!-- Premier tableau -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>SNDPOR</th>
+                                <th>MESTYP</th>
+                                <th>BEGIN</th>
+                                <th>RCVPOR</th>
+                                <th>MANDT</th>
+                                <th>SEGMENT_1</th>
+                                <th>EDI_DC40</th>
+                                <th>SEGMENT_3</th>
+                                <th>SEGMENT_2</th>
+                                <th>MTART</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ data.sndpor }}</td>
+                                <td>{{ data.mestyp }}</td>
+                                <td>{{ data.begin }}</td>
+                                <td>{{ data.rcvpor }}</td>
+                                <td>{{ data.mandt }}</td>
+                                <td>{{ data.segment_1 }}</td>
+                                <td>{{ data.edi_dc40 }}</td>
+                                <td>{{ data.segment_3 }}</td>
+                                <td>{{ data.segment_2 }}</td>
+                                <td>{{ data.mtart }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Deuxième tableau -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>E1MARAM</th>
+                                <th>DIRECT</th>
+                                <th>MATNR</th>
+                                <th>ERNAM</th>
+                                <th>RCVPRN</th>
+                                <th>E1MAKTM</th>
+                                <th>SNDPRT</th>
+                                <th>RCVPRT</th>
+                                <th>MEINS</th>
+                                <th>SNDPRN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ data.e1maram }}</td>
+                                <td>{{ data.direct }}</td>
+                                <td>{{ data.matnr }}</td>
+                                <td>{{ data.ernam }}</td>
+                                <td>{{ data.rcvprn }}</td>
+                                <td>{{ data.e1maktm }}</td>
+                                <td>{{ data.sndprt }}</td>
+                                <td>{{ data.rcvprt }}</td>
+                                <td>{{ data.meins }}</td>
+                                <td>{{ data.sndprn }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Troisième tableau -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>MBRSH</th>
+                                <th>TABNAM</th>
+                                <th>IDOCTYP</th>
+                                <th>CONTAINER</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ data.mbrsh }}</td>
+                                <td>{{ data.tabnam }}</td>
+                                <td>{{ data.idoctyp }}</td>
+                                <td>{{ data.container }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
         <div class="mt-4">
             <a href="/" class="btn btn-primary">Upload Another Image</a>
+            <button id="send-to-sap" class="btn btn-success">Send to SAP</button>
         </div>
     </div>
 </body>

@@ -4,14 +4,16 @@ import pytesseract
 import io
 import base64
 import re
-
-# Path to Tesseract-OCR executable
+from flask_cors import CORS
+ 
+# Chemin vers l'exécutable Tesseract-OCR
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 app = Flask(__name__)
-
+CORS(app)
+ 
 # Route principale pour afficher le formulaire de téléchargement
-@app.route('/form', methods=['GET'])
+@app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
 
@@ -20,32 +22,48 @@ def index():
 def extract_text():
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
-    
+
     file = request.files['file']
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
-    
+
     # Lire le fichier image téléchargé
     image = Image.open(io.BytesIO(file.read()))
-    
+
     # Effectuer l'OCR à l'aide de Tesseract
     extracted_text = pytesseract.image_to_string(image)
+    print("Texte extrait :", extracted_text)  # Ajout pour le débogage
 
     # Analyser le texte extrait
     try:
         data = {
-            'material': re.search(r'Material:\s*(.*)', extracted_text).group(1).strip(),
-            'plant': re.search(r'Plant:\s*(.*)', extracted_text).group(1).strip(),
-            'storage_location': re.search(r'Storage Location:\s*(.*)', extracted_text).group(1).strip(),
-            'movement_type': re.search(r'Movement Type:\s*(.*)', extracted_text).group(1).strip(),
-            'special_stock': re.search(r'Special Stock:\s*(.*)', extracted_text).group(1).strip(),
-            'material_document': re.search(r'Material Document:\s*(.*)', extracted_text).group(1).strip(),
-            'posting_date': re.search(r'Posting Date:\s*(.*)', extracted_text).group(1).strip(),
-            'quantity_in_unit_of_entry': re.search(r'Quantity in Unit of Entry:\s*(.*)', extracted_text).group(1).strip(),
-            'unit_of_entry': re.search(r'Unit of Entry:\s*(.*)', extracted_text).group(1).strip()
+            'sndpor': re.search(r'SNDPOR:\s*(.*)', extracted_text).group(1).strip() if re.search(r'SNDPOR:\s*(.*)', extracted_text) else 'N/A',
+            'mestyp': re.search(r'MESTYP:\s*(.*)', extracted_text).group(1).strip() if re.search(r'MESTYP:\s*(.*)', extracted_text) else 'N/A',
+            'begin': re.search(r'BEGIN:\s*(.*)', extracted_text).group(1).strip() if re.search(r'BEGIN:\s*(.*)', extracted_text) else 'N/A',
+            'rcvpor': re.search(r'RCVPOR:\s*(.*)', extracted_text).group(1).strip() if re.search(r'RCVPOR:\s*(.*)', extracted_text) else 'N/A',
+            'mandt': re.search(r'MANDT:\s*(.*)', extracted_text).group(1).strip() if re.search(r'MANDT:\s*(.*)', extracted_text) else 'N/A',
+            'segment_1': re.search(r'SEGMENT_1:\s*(.*)', extracted_text).group(1).strip() if re.search(r'SEGMENT_1:\s*(.*)', extracted_text) else 'N/A',
+            'edi_dc40': re.search(r'EDI_DC40:\s*(.*)', extracted_text).group(1).strip() if re.search(r'EDI_DC40:\s*(.*)', extracted_text) else 'N/A',
+            'segment_3': re.search(r'SEGMENT_3:\s*(.*)', extracted_text).group(1).strip() if re.search(r'SEGMENT_3:\s*(.*)', extracted_text) else 'N/A',
+            'segment_2': re.search(r'SEGMENT_2:\s*(.*)', extracted_text).group(1).strip() if re.search(r'SEGMENT_2:\s*(.*)', extracted_text) else 'N/A',
+            'mtart': re.search(r'MTART:\s*(.*)', extracted_text).group(1).strip() if re.search(r'MTART:\s*(.*)', extracted_text) else 'N/A',
+            'e1maram': re.search(r'E1MARAM:\s*(.*)', extracted_text).group(1).strip() if re.search(r'E1MARAM:\s*(.*)', extracted_text) else 'N/A',
+            'direct': re.search(r'DIRECT:\s*(.*)', extracted_text).group(1).strip() if re.search(r'DIRECT:\s*(.*)', extracted_text) else 'N/A',
+            'matnr': re.search(r'MATNR:\s*(.*)', extracted_text).group(1).strip() if re.search(r'MATNR:\s*(.*)', extracted_text) else 'N/A',
+            'ernam': re.search(r'ERNAM:\s*(.*)', extracted_text).group(1).strip() if re.search(r'ERNAM:\s*(.*)', extracted_text) else 'N/A',
+            'rcvprn': re.search(r'RCVPRN:\s*(.*)', extracted_text).group(1).strip() if re.search(r'RCVPRN:\s*(.*)', extracted_text) else 'N/A',
+            'e1maktm': re.search(r'E1MAKTM:\s*(.*)', extracted_text).group(1).strip() if re.search(r'E1MAKTM:\s*(.*)', extracted_text) else 'N/A',
+            'sndprt': re.search(r'SNDPRT:\s*(.*)', extracted_text).group(1).strip() if re.search(r'SNDPRT:\s*(.*)', extracted_text) else 'N/A',
+            'rcvprt': re.search(r'RCVPRT:\s*(.*)', extracted_text).group(1).strip() if re.search(r'RCVPRT:\s*(.*)', extracted_text) else 'N/A',
+            'meins': re.search(r'MEINS:\s*(.*)', extracted_text).group(1).strip() if re.search(r'MEINS:\s*(.*)', extracted_text) else 'N/A',
+            'sndprn': re.search(r'SNDPRN:\s*(.*)', extracted_text).group(1).strip() if re.search(r'SNDPRN:\s*(.*)', extracted_text) else 'N/A',
+            'mbrsh': re.search(r'MBRSH:\s*(.*)', extracted_text).group(1).strip() if re.search(r'MBRSH:\s*(.*)', extracted_text) else 'N/A',
+            'tabnam': re.search(r'TABNAM:\s*(.*)', extracted_text).group(1).strip() if re.search(r'TABNAM:\s*(.*)', extracted_text) else 'N/A',
+            'idoctyp': re.search(r'IDOCTYP:\s*(.*)', extracted_text).group(1).strip() if re.search(r'IDOCTYP:\s*(.*)', extracted_text) else 'N/A',
+            'container': re.search(r'CONTAINER:\s*(.*)', extracted_text).group(1).strip() if re.search(r'CONTAINER:\s*(.*)', extracted_text) else 'N/A',
         }
-    except AttributeError:
-        return jsonify({'error': 'Unable to parse the extracted text.'}), 400
+    except AttributeError as e:
+        return jsonify({'error': f'Unable to parse the extracted text. Details: {e}'}), 400
 
     # Réinitialiser le pointeur de fichier et encoder l'image en base64
     file.seek(0)
@@ -59,4 +77,4 @@ def test():
     return 'Server is running!'
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)  # Changer le numéro de port si nécessaire
+    app.run(debug=True)
