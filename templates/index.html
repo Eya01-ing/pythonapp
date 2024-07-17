@@ -2,9 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Upload Image</title>
+    <title>Watermelon IA application</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <style>
+        .header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-bottom: 2px solid #03A8E3;
+        }
+        .title {
+            color: #03A8E3;
+            font-size: 2rem; 
+            margin-bottom: 0; 
+        }
+        .logo {
+            height: 100px;
+        }
+        .content {
+            margin-top: 15px;
+        }
+    </style>
     <script>
         function previewImage() {
             const file = document.querySelector('input[type=file]').files[0];
@@ -21,16 +39,32 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1>Upload an Image to Extract Text</h1>
-        <form action="/extract-text" method="post" enctype="multipart/form-data" class="mt-4">
-            <div class="form-group">
-                <input type="file" name="file" class="form-control" onchange="previewImage()">
+        <div class="header text-center">
+            <div class="row mb-3 align-items-center">
+                <div class="col">
+                    <img src="{{ url_for('static', filename='Logos/melon.png') }}" class="logo">
+                </div>
+                <div class="col">
+                    <h1 class="title">Watermelon IA<br>application</h1>
+                </div>
+                <div class="col">
+                    <img src="{{ url_for('static', filename='Logos/koala.png') }}" class="logo">
+                    <p>Siesta Team</p>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Upload</button>
-        </form>
-        <div class="mt-4">
-            <h3>Image Preview</h3>
-            <img id="preview" src="" alt="Image Preview" style="max-width: 100%; height: auto;">
+        </div>
+        <div class="content text-center">
+            <h2>Upload a material file to extract informations</h2>
+            <form action="/extract-text" method="post" enctype="multipart/form-data" class="mt-4">
+                <div class="form-group">
+                    <input type="file" name="file" class="form-control" onchange="previewImage()">
+                </div>
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </form>
+            <div class="mt-4">
+                <h3>Document preview</h3>
+                <img id="preview" src="" alt="Document preview" style="max-width: 100%; height: auto;">
+            </div>
         </div>
     </div>
 </body>

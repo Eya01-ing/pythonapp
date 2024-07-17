@@ -2,40 +2,190 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Extracted Text</title>
+    <title>Watermelon IA application</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style>
+        .header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-bottom: 2px solid #03A8E3;
+        }
+        .title {
+            color: #03A8E3;
+            font-size: 2.5rem; 
+            margin-bottom: 0; 
+        }
+        .logo {
+            height: 100px;
+        }
+        .content {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <div class="container mt-5">
+        <div class="header text-center">
+            <div class="row mb-3 align-items-center">
+                <div class="col">
+                    <img src="{{ url_for('static', filename='Logos/melon.png') }}" class="logo">
+                </div>
+                <div class="col">
+                    <h1 class="title">Watermelon IA application</h1>
+                </div>
+                <div class="col">
+                    <img src="{{ url_for('static', filename='Logos/koala.png') }}" class="logo">
+                    <p>Siesta Team</p>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="mt-4">
+                <h3>Uploaded material file</h3>
+                <img src="data:image/jpeg;base64,{{ image_data }}" alt="Uploaded Image" style="max-width: 100%; height: auto;">
+            </div>
+            <div class="mt-4">
+                <h3>Extracted informations</h3>
+                
+
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>SNDPOR</th>
+                                    <th>MESTYP</th>
+                                    <th>BEGIN</th>
+                                    <th>RCVPOR</th>
+                                    <th>MANDT</th>
+                                    <th>SEGMENT_1</th>
+                                    <th>EDI_DC40</th>
+                                    <th>SEGMENT_3</th>
+                                    <th>SEGMENT_2</th>
+                                    <th>MTART</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ data.sndpor }}</td>
+                                    <td>{{ data.mestyp }}</td>
+                                    <td>{{ data.begin }}</td>
+                                    <td>{{ data.rcvpor }}</td>
+                                    <td>{{ data.mandt }}</td>
+                                    <td>{{ data.segment_1 }}</td>
+                                    <td>{{ data.edi_dc40 }}</td>
+                                    <td>{{ data.segment_3 }}</td>
+                                    <td>{{ data.segment_2 }}</td>
+                                    <td>{{ data.mtart }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>E1MARAM</th>
+                                    <th>DIRECT</th>
+                                    <th>MATNR</th>
+                                    <th>ERNAM</th>
+                                    <th>RCVPRN</th>
+                                    <th>E1MAKTM</th>
+                                    <th>SNDPRT</th>
+                                    <th>RCVPRT</th>
+                                    <th>MEINS</th>
+                                    <th>SNDPRN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ data.e1maram }}</td>
+                                    <td>{{ data.direct }}</td>
+                                    <td>{{ data.matnr }}</td>
+                                    <td>{{ data.ernam }}</td>
+                                    <td>{{ data.rcvprn }}</td>
+                                    <td>{{ data.e1maktm }}</td>
+                                    <td>{{ data.sndprt }}</td>
+                                    <td>{{ data.rcvprt }}</td>
+                                    <td>{{ data.meins }}</td>
+                                    <td>{{ data.sndprn }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>MBRSH</th>
+                                    <th>TABNAM</th>
+                                    <th>IDOCTYP</th>
+                                    <th>CONTAINER</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ data.mbrsh }}</td>
+                                    <td>{{ data.tabnam }}</td>
+                                    <td>{{ data.idoctyp }}</td>
+                                    <td>{{ data.container }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="mt-4">
+                <a href="/" class="btn btn-primary">Upload Another document</a>
+                <button id="sendToSap" class="btn btn-success">Send to SAP</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#send-to-sap').on('click', function() {
-                var data1 = JSON.stringify({
-            "SNDPOR": "SAPAQE",
-            "MESTYP": "MATMAS",
-            "BEGIN": "1",
-            "RCVPOR": "CPI",
-            "MANDT": "400",
-            "SEGMENT_1": "1",
-            "EDI_DC40": "string",
-            "SEGMENT_3": "1",
-            "SEGMENT_2": "1",
-            "MTART": "FERT",
-            "E1MARAM": "string",
-            "DIRECT": "1",
-            "MATNR": "000000000000001132",
-            "ERNAM": "string",
-            "RCVPRN": "S4HANATOCP",
-            "E1MAKTM": "string",
-            "SNDPRT": "LS CPI",
-            "RCVPRT": "LS CPI",
-            "MEINS": "string",
-            "SNDPRN": "AQE_SENDER",
-            "MBRSH": "M",
-            "TABNAM": "EDI_DC40",
-            "IDOCTYP": "MATMAS05",
-            "CONTAINER": "string"})
-                var data = JSON.stringify({
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('sendToSap').addEventListener('click', function() {
+                var data1 = {
+                    "SNDPOR": "SAPAQE",
+                    "MESTYP": "MATMAS",
+                    "BEGIN": "1",
+                    "RCVPOR": "CPI",
+                    "MANDT": "400",
+                    "SEGMENT_1": "1",
+                    "EDI_DC40": "string",
+                    "SEGMENT_3": "1",
+                    "SEGMENT_2": "1",
+                    "MTART": "FERT",
+                    "E1MARAM": "string",
+                    "DIRECT": "1",
+                    "MATNR": "000000000000001132",
+                    "ERNAM": "string",
+                    "RCVPRN": "S4HANATOCP",
+                    "E1MAKTM": "string",
+                    "SNDPRT": "LS CPI",
+                    "RCVPRT": "LS CPI",
+                    "MEINS": "string",
+                    "SNDPRN": "AQE_SENDER",
+                    "MBRSH": "M",
+                    "TABNAM": "EDI_DC40",
+                    "IDOCTYP": "MATMAS05",
+                    "CONTAINER": "string"
+                };
+
+                var data = {
                     "SNDPOR": "{{ data.sndpor }}",
                     "MESTYP": "{{ data.mestyp }}",
                     "BEGIN": "{{ data.begin }}",
@@ -57,141 +207,51 @@
                     "MEINS": "{{ data.meins }}",
                     "SNDPRN": "{{ data.sndprn }}",
                     "MBRSH": "{{ data.mbrsh }}",
-                    "TABNAM": "{{ data.tabnam }}",
+                    "TABNAM": "EDI_DC40",
                     "IDOCTYP": "MATMAS05",
                     "CONTAINER": "{{ data.container }}"
-                });
-                console.log(data)
-                $.ajax({
-                    type: 'POST',
-                    url: "https://14385865trial-trial.integrationsuitetrial-apim.us10.hana.ondemand.com:443/14385865trial/AI",
-                    data: data1,
-                    contentType: 'application/json',
+                };
+
+                fetch('/proxy-to-sap', {
+                    method: 'POST',
                     headers: {
-                        'Authorization': 'Basic sb-f1802272-ccd0-41e5-9df4-e79403f0c99a!b297017|it!b26655:351e9efe-8bf5-4bee-8172-51b67b2f99f6$_xv2TgE8YPiJePwC2nvErf9YLRziE4P7CBMYi8ooIFE='
+                        'Content-Type': 'application/json'
                     },
-                    success: function(response) {
-                        console.log(response);
-                        alert('Data sent to SAP successfully!');
-                    },
-                    error: function(error) {
-                        console.log(error);
-                        alert('Failed to send data to SAP.');
-                    }
+                    body: JSON.stringify(data1)
+                })
+                .then(response => response.json())
+                .then(data1 => {
+                    $('#successModal').modal('show');
+                    console.log('Success:', data1);
+                    // Handle response here if necessary
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    // Handle errors here if necessary
                 });
             });
         });
     </script>
-    <div class="container mt-5">
-        <h1>Extracted Text</h1>
-        <div class="mt-4">
-            <h3>Uploaded Image</h3>
-            <img src="data:image/jpeg;base64,{{ image_data }}" alt="Uploaded Image" style="max-width: 100%; height: auto;">
-        </div>
-        <div class="mt-4">
-            <h3>Extracted Information</h3>
-            
-            <!-- Premier tableau -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>SNDPOR</th>
-                                <th>MESTYP</th>
-                                <th>BEGIN</th>
-                                <th>RCVPOR</th>
-                                <th>MANDT</th>
-                                <th>SEGMENT_1</th>
-                                <th>EDI_DC40</th>
-                                <th>SEGMENT_3</th>
-                                <th>SEGMENT_2</th>
-                                <th>MTART</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{{ data.sndpor }}</td>
-                                <td>{{ data.mestyp }}</td>
-                                <td>{{ data.begin }}</td>
-                                <td>{{ data.rcvpor }}</td>
-                                <td>{{ data.mandt }}</td>
-                                <td>{{ data.segment_1 }}</td>
-                                <td>{{ data.edi_dc40 }}</td>
-                                <td>{{ data.segment_3 }}</td>
-                                <td>{{ data.segment_2 }}</td>
-                                <td>{{ data.mtart }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+    
+    
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Success!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    GREAT! Data sent to SAP.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
-            
-            <!-- Deuxième tableau -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>E1MARAM</th>
-                                <th>DIRECT</th>
-                                <th>MATNR</th>
-                                <th>ERNAM</th>
-                                <th>RCVPRN</th>
-                                <th>E1MAKTM</th>
-                                <th>SNDPRT</th>
-                                <th>RCVPRT</th>
-                                <th>MEINS</th>
-                                <th>SNDPRN</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{{ data.e1maram }}</td>
-                                <td>{{ data.direct }}</td>
-                                <td>{{ data.matnr }}</td>
-                                <td>{{ data.ernam }}</td>
-                                <td>{{ data.rcvprn }}</td>
-                                <td>{{ data.e1maktm }}</td>
-                                <td>{{ data.sndprt }}</td>
-                                <td>{{ data.rcvprt }}</td>
-                                <td>{{ data.meins }}</td>
-                                <td>{{ data.sndprn }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- Troisième tableau -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>MBRSH</th>
-                                <th>TABNAM</th>
-                                <th>IDOCTYP</th>
-                                <th>CONTAINER</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{{ data.mbrsh }}</td>
-                                <td>{{ data.tabnam }}</td>
-                                <td>{{ data.idoctyp }}</td>
-                                <td>{{ data.container }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-        <div class="mt-4">
-            <a href="/" class="btn btn-primary">Upload Another Image</a>
-            <button id="send-to-sap" class="btn btn-success">Send to SAP</button>
         </div>
     </div>
+  
 </body>
 </html>

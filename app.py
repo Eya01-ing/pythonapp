@@ -4,20 +4,18 @@ import pytesseract
 import io
 import base64
 import re
-from flask_cors import CORS
- 
-# Chemin vers l'exécutable Tesseract-OCR
+from flask_cors import CORS , cross_origin
+import requests
+
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 app = Flask(__name__)
-CORS(app)
- 
-# Route principale pour afficher le formulaire de téléchargement
+cors = CORS(app, resources={r"/proxy-to-sap": {"origins": "*"}})
+
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
 
-# Route pour gérer le téléchargement et l'extraction du texte
 @app.route('/extract-text', methods=['POST'])
 def extract_text():
     if 'file' not in request.files:
@@ -27,14 +25,11 @@ def extract_text():
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
-    # Lire le fichier image téléchargé
     image = Image.open(io.BytesIO(file.read()))
 
-    # Effectuer l'OCR à l'aide de Tesseract
     extracted_text = pytesseract.image_to_string(image)
-    print("Texte extrait :", extracted_text)  # Ajout pour le débogage
+    print("Texte extrait :", extracted_text)  
 
-    # Analyser le texte extrait
     try:
         data = {
             'sndpor': re.search(r'SNDPOR:\s*(.*)', extracted_text).group(1).strip() if re.search(r'SNDPOR:\s*(.*)', extracted_text) else 'N/A',
@@ -65,16 +60,33 @@ def extract_text():
     except AttributeError as e:
         return jsonify({'error': f'Unable to parse the extracted text. Details: {e}'}), 400
 
-    # Réinitialiser le pointeur de fichier et encoder l'image en base64
     file.seek(0)
     image_base64 = base64.b64encode(file.read()).decode('utf-8')
 
-    # Rendre le modèle avec le texte extrait
+   
     return render_template('results.html', data=data, image_data=image_base64)
 
 @app.route('/test', methods=['GET'])
 def test():
     return 'Server is running!'
+@app.route('/proxy-to-sap', methods=['GET','POST'])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+
+def proxy_to_sap():
+    data = request.get_json()
+
+    url = "https://14385865trial-trial.integrationsuitetrial-apim.us10.hana.ondemand.com/14385865trial/AI"
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic sb-f1802272-ccd0-41e5-9df4-e79403f0c99a!b297017|it!b26655:351e9efe-8bf5-4bee-8172-51b67b2f99f6$_xv2TgE8YPiJePwC2nvErf9YLRziE4P7CBMYi8ooIFE='
+    }
+
+    try:
+      response = requests.post(url, json=data, headers=headers)
+      response.raise_for_status()
+      return jsonify(response.json())
+    except requests.exceptions.RequestException as e:
+      return jsonify({'error': f'Failed to send data to SAP: {str(e)}'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
